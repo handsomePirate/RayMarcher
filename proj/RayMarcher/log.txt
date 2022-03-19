@@ -1,0 +1,1 @@
+[Info] E:\Dokumenty\VS projects\git\RayMarcher\src\RendererConfig.yaml

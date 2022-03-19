@@ -1,3 +1,6 @@
 [submodule "ext/HawkEye"]
 	path = ext/HawkEye
-	url = git@github.com/HawkEye.git
+	url = git@github.com:handsomePirate/HawkEye.git
+[submodule "ext/EverViewport"]
+	path = ext/EverViewport
+	url = git@github.com:handsomePirate/EverViewport.git

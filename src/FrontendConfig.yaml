@@ -1,0 +1,15 @@
+# Hawk Eye pipeline configuration.
+
+nodes:
+  -
+    type: computed
+    name: rayMarch
+    final: true
+    input:
+    output:
+        color:
+            access: w
+            format: color-optimal
+    shaders:
+        compute: ../../src/Shaders/march.comp.glsl
+    uniforms:

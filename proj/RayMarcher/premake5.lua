@@ -1,25 +1,32 @@
-RayMarcherInclude = path.getabsolute("../../include", os.getcwd())
-
 project "RayMarcher"
-	kind "StaticLib"
+	kind "ConsoleApp"
 	staticruntime "off"
 	language "C++"
 	cppdialect "C++17"
 	location ""
 	targetdir "../../build/%{cfg.buildcfg}"
 	objdir "obj/%{cfg.buildcfg}"
-	files { "../../src/**.hpp", "../../src/**.cpp", "../../src/**.glsl", "../../include/**.hpp" }
+	files { 
+		"../../src/**.hpp",
+		"../../src/**.cpp",
+		"../../src/**.glsl",
+		"../../src/**.yaml"
+	}
 
 	flags {
 		"MultiProcessorCompile"
 	}
 
 	includedirs {
-		HawkEyeInclude
+		HawkEyeInclude,
+		SoftwareCoreInclude,
+		EverViewportInclude
 	}
 
 	links {
-		"HawkEye"
+		"HawkEye",
+		"SoftwareCore",
+		"EverViewport"
 	}
 	
 	filter "configurations:Debug"

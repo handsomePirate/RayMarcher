@@ -1,3 +1,8 @@
 group "ext"
+	include "ext/EverViewport/dependencies.lua"
 	include "ext/HawkEye/dependencies.lua"
+group ""
+group "ext"
+	include "ext/EverViewport/proj/EverViewport"
+	include "ext/HawkEye/proj/HawkEye"
 group ""

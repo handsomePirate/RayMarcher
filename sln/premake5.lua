@@ -6,8 +6,7 @@ workspace "RayMarcher"
 	
 	flags
 	{
-		"MultiProcessorCompile",
-		"FatalWarnings"
+		"MultiProcessorCompile"
 	}
 	
 include "../dependencies.lua"
