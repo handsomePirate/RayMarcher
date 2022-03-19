@@ -1,0 +1,3 @@
+[submodule "ext/HawkEye"]
+	path = ext/HawkEye
+	url = git@github.com/HawkEye.git
