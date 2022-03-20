@@ -40,7 +40,7 @@ float distanceFromSphere(vec3 point, vec3 origin, float radius)
 	return length(point - origin) - radius;
 }
 
-float SDF(vec3 position)
+float DE(vec3 position)
 {
 	return distanceFromSphere(position, vec3(0), 10.f);
 }
@@ -64,7 +64,7 @@ void main()
 
 	for (int i = 0; i < MAX_ITERATIONS; ++i)
 	{
-		float sdf = SDF(camera.position.xyz + t * ray);
+		float sdf = DE(camera.position.xyz + t * ray);
 
 		if (sdf < EPSILON)
 		{
@@ -82,7 +82,13 @@ void main()
 	}
 
 	vec3 hitPosition = camera.position.xyz + t * ray;
+	vec3 xDir = vec3(EPSILON, 0, 0);
+	vec3 yDir = vec3(0, EPSILON, 0);
+	vec3 zDir = vec3(0, 0, EPSILON);
 
-	vec3 resultColor = int(hit) * abs(hitPosition * .1f);
-	outputColor(resultColor);
+	vec3 normal = normalize(vec3(DE(hitPosition+xDir)-DE(hitPosition-xDir),
+		                DE(hitPosition+yDir)-DE(hitPosition-yDir),
+		                DE(hitPosition+zDir)-DE(hitPosition-zDir)));
+
+	outputColor(normal);
 }
