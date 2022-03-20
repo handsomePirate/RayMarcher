@@ -80,6 +80,12 @@ float recursiveTetrahedron(vec3 position)
     return (length(z.xyz) - 1.5f) / z.w;
 }
 
+float smoothUnion(float d1, float d2, float k)
+{
+    float h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0);
+    return mix(d2, d1, h) - k * h * (1.0 - h);
+}
+
 const float PI = 3.14159265f;
 
 // Estimate distance to the fractal surface.
@@ -87,7 +93,7 @@ float DE(vec3 position)
 {
 	vec3 originalPosition = position;
 	position = rotateY(rotateZ(position, time.seconds * .25f), time.seconds * .125f);
-    return min(recursiveTetrahedron(position), plane(originalPosition, vec3(0, 20, 0), vec3(0, -1, 0)));
+    return smoothUnion(recursiveTetrahedron(position), plane(originalPosition, vec3(0, 12, 0), vec3(0, -1, 0)), 2.5f);
 }
 
 // Specify ray march constants.
