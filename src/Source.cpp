@@ -53,10 +53,10 @@ int main(int argc, char* argv[])
 	pipeline.Configure(rendererData, pathToFrontend.c_str(), windowWidth, windowHeight,
 		window.GetWindowHandle(), window.GetProgramConnection());
 
-	camera.SetPosition(0, 0, -25);
+	camera.SetPosition(0, 0, -40);
 
 	const float targetTimeDelta = 1 / 60.f * 1000.f;
-	float timeDelta = 1;
+	float timeDelta = 1.f;
 	auto before = std::chrono::high_resolution_clock::now();
 	while (!window.ShouldClose())
 	{

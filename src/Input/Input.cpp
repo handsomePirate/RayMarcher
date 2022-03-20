@@ -46,6 +46,7 @@ void UpdateCamera(HawkEye::Pipeline& pipeline, Camera& camera)
 void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Camera& camera, float timeDelta)
 {
 	static bool lastEsc = false;
+	static float timeUniform = 0.f;
 
 	bool nowEsc = CoreInput.IsKeyPressed(Core::Input::Keys::Escape);
 	if (nowEsc && !lastEsc)
@@ -110,4 +111,11 @@ void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Came
 
 	lastMouseX = mouseX;
 	lastMouseY = mouseY;
+
+	timeUniform += timeDelta * .001f;
+
+	if (pipeline.Configured())
+	{
+		pipeline.SetUniform("rayMarch", "time", timeUniform);
+	}
 }

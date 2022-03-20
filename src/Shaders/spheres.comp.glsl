@@ -40,9 +40,10 @@ float distanceFromSphere(vec3 point, vec3 origin, float radius)
 	return length(point - origin) - radius;
 }
 
-float DE(vec3 position)
+float DE(vec3 z)
 {
-	return distanceFromSphere(position, vec3(0), 10.f);
+	z.xy = mod((z.xy),1.f) - vec2(.5f); // instance on xy-plane
+	return length(z) - .3f;             // sphere DE
 }
 
 const float EPSILON = .001f;
@@ -87,9 +88,20 @@ void main()
 	vec3 zDir = vec3(0, 0, EPSILON);
 
 	vec3 normal = normalize(
-		vec3(DE(hitPosition+xDir)-DE(hitPosition-xDir),
-			DE(hitPosition+yDir)-DE(hitPosition-yDir),
-			DE(hitPosition+zDir)-DE(hitPosition-zDir)));
+		vec3(DE(hitPosition + xDir) - DE(hitPosition - xDir),
+			DE(hitPosition + yDir) - DE(hitPosition - yDir),
+			DE(hitPosition + zDir) - DE(hitPosition - zDir)));
 
-	outputColor(normal);
+	vec3 lightPosition = vec3(camera.position.xy, -12.f);
+	vec3 lightDirection = normalize(lightPosition - hitPosition);
+	float lightDistance = length(lightPosition - hitPosition);
+	float lightIntensityDiffuse = 10.f;
+
+	vec3 reflectedDirection = reflect(-lightDirection, normal);
+	vec3 viewDirection = normalize(camera.position.xyz - hitPosition);
+
+	float diffuseMask = lightIntensityDiffuse * dot(normal, lightDirection) / lightDistance;
+
+	vec3 resultColor = int(hit) * vec3(diffuseMask);
+	outputColor(resultColor);
 }

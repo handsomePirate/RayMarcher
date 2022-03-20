@@ -11,9 +11,13 @@ nodes:
             access: w
             format: color-optimal
     shaders:
-        compute: ../../src/Shaders/sphere.comp.glsl
+        compute: ../../src/Shaders/tetrahedron-fractal.comp.glsl
     uniforms:
       -
         name: camera
         type: uniform
         size: 64
+      -
+        name: time
+        type: uniform
+        size: 4
