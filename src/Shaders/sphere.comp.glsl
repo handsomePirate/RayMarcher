@@ -83,6 +83,6 @@ void main()
 
 	vec3 hitPosition = camera.position.xyz + t * ray;
 
-	vec3 resultColor = (1.f - steps / float(MAX_ITERATIONS)) * abs(hitPosition * .1f);
+	vec3 resultColor = int(hit) * abs(hitPosition * .1f);
 	outputColor(resultColor);
 }
