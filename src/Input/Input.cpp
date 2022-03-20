@@ -3,6 +3,46 @@
 #include <SoftwareCore/Input.hpp>
 #include <SoftwareCore/DefaultLogger.hpp>
 
+void UpdateCamera(HawkEye::Pipeline& pipeline, Camera& camera)
+{
+	camera.UpdateViewProjectionMatrices();
+	if (pipeline.Configured())
+	{
+		Eigen::Matrix4f viewProjectionMatrix = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+
+		Eigen::Matrix4f inverseViewProjectionMatrix = viewProjectionMatrix.inverse();
+
+		Eigen::Vector3f cameraPosition = camera.GetPosition();
+		Eigen::Vector4f eye = Eigen::Vector4f(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 1.f);
+
+		Eigen::Vector4f ray00 = inverseViewProjectionMatrix * Eigen::Vector4f(-1, -1, 0, 1);
+		ray00 /= ray00.w();
+		ray00 -= eye;
+
+		Eigen::Vector4f ray10 = inverseViewProjectionMatrix * Eigen::Vector4f(1, -1, 0, 1);
+		ray10 /= ray10.w();
+		ray10 -= eye;
+
+		Eigen::Vector4f ray01 = inverseViewProjectionMatrix * Eigen::Vector4f(-1, 1, 0, 1);
+		ray01 /= ray01.w();
+		ray01 -= eye;
+
+		struct ShaderCamera
+		{
+			Eigen::Vector4f position;
+			Eigen::Vector4f ray0;
+			Eigen::Vector4f horizontal;
+			Eigen::Vector4f vertical;
+		};
+
+		ShaderCamera shaderCamera = {
+			eye, ray00, ray10 - ray00, ray01 - ray00
+		};
+
+		pipeline.SetUniform("rayMarch", "camera", shaderCamera);
+	}
+}
+
 void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Camera& camera, float timeDelta)
 {
 	static bool lastEsc = false;
@@ -51,7 +91,7 @@ void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Came
 	uint16_t mouseX = CoreInput.GetMouseX();
 	uint16_t mouseY = CoreInput.GetMouseY();
 	const bool isMousePressedLeft = CoreInput.IsMouseButtonPressed(Core::Input::MouseButtons::Left);
-	const float mouseSensitivity = 0.005f;
+	const float mouseSensitivity = 0.001f;
 
 	if (isMousePressedLeft)
 	{
@@ -66,50 +106,7 @@ void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Came
 		camera.RotateLocal({ 1, 0, 0 }, yMove);
 	}
 
-	camera.UpdateViewProjectionMatrices();
-
-	if (pipeline.Configured())
-	{
-		Eigen::Matrix4f viewProjectionMatrix = camera.GetProjectionMatrix() * camera.GetViewMatrix();
-
-		Eigen::Matrix4f inverseViewProjectionMatrix = viewProjectionMatrix.inverse();
-
-		Eigen::Vector3f cameraPosition = camera.GetPosition();
-		Eigen::Vector4f eye = Eigen::Vector4f(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 1.f);
-		
-		Eigen::Vector4f ray00 = inverseViewProjectionMatrix * Eigen::Vector4f(-1, -1, 0, 1);
-		ray00 /= ray00.w();
-		ray00 -= eye;
-		
-		Eigen::Vector4f ray10 = inverseViewProjectionMatrix * Eigen::Vector4f(1, -1, 0, 1);
-		ray10 /= ray10.w();
-		ray10 -= eye;
-
-		Eigen::Vector4f ray01 = inverseViewProjectionMatrix * Eigen::Vector4f(-1, 1, 0, 1);
-		ray01 /= ray01.w();
-		ray01 -= eye;
-
-		struct ShaderCamera
-		{
-			Eigen::Vector4f position;
-			Eigen::Vector4f ray0;
-			Eigen::Vector4f horizontal;
-			Eigen::Vector4f vertical;
-		};
-
-		ShaderCamera shaderCamera = {
-			eye, ray00, ray10 - ray00, ray01 - ray00
-			//{ eye.x(), eye.y(), eye.z() },
-			//{ ray00.x(), ray00.y(), ray00.z() },
-			//{ ray10.x() - ray00.x(), ray10.y() - ray00.y(), ray10.z() - ray00.z() },
-			//{ ray01.x() - ray00.x(), ray01.y() - ray00.y(), ray01.z() - ray00.z() }
-		};
-
-		//auto centerRay = (shaderCamera.ray0 + .5f * shaderCamera.horizontal + .5f * shaderCamera.vertical).normalized();
-		//CoreLogInfo(DefaultLogger, "%f, %f, %f", centerRay.x(), centerRay.y(), centerRay.z());
-
-		pipeline.SetUniform("rayMarch", "camera", shaderCamera);
-	}
+	UpdateCamera(pipeline, camera);
 
 	lastMouseX = mouseX;
 	lastMouseY = mouseY;

@@ -38,6 +38,11 @@ int main(int argc, char* argv[])
 	};
 	windowCallbacks.resizeFunction = [](int width, int height)
 	{
+		windowWidth = width;
+		windowHeight = height;
+		camera.SetAspect(windowWidth / float(windowHeight));
+		camera.UpdateViewProjectionMatrices();
+		UpdateCamera(pipeline, camera);
 		if (pipeline.Configured())
 		{
 			pipeline.Resize(width, height);
@@ -47,6 +52,8 @@ int main(int argc, char* argv[])
 
 	pipeline.Configure(rendererData, pathToFrontend.c_str(), windowWidth, windowHeight,
 		window.GetWindowHandle(), window.GetProgramConnection());
+
+	camera.SetPosition(0, 0, -25);
 
 	const float targetTimeDelta = 1 / 60.f * 1000.f;
 	float timeDelta = 1;
