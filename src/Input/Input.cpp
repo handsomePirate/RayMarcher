@@ -71,7 +71,7 @@ void HandleInput(HawkEye::Pipeline& pipeline, EverViewport::Window& window, Came
 	if (forward || back || left || right || up || down)
 	{
 		//const float moveSensitivity = shift ? 120.f : 50.f;
-		const float moveSensitivity = .002f;
+		const float moveSensitivity = .005f;
 		const float forwardDelta =
 			((forward ? moveSensitivity : -moveSensitivity) +
 				(back ? -moveSensitivity : moveSensitivity))

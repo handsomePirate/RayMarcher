@@ -45,12 +45,7 @@ float SDF(vec3 position)
 	return distanceFromSphere(position, vec3(0), 10.f);
 }
 
-float map(float value, float inMin, float inMax, float outMin, float outMax) {
-  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
-}
-
 const float EPSILON = .001f;
-const float ALIAS_EPSILON = 0.0005f;
 const int MAX_ITERATIONS =  10;
 float MAX_DISTANCE = 1000.f;
 
@@ -65,8 +60,7 @@ void main()
 
 	float t = 0.f;
 	bool hit = false;
-	bool hitAlias = false;
-	float antialias = 1.f;
+	int steps = 0;
 
 	for (int i = 0; i < MAX_ITERATIONS; ++i)
 	{
@@ -75,13 +69,8 @@ void main()
 		if (sdf < EPSILON)
 		{
 			hit = true;
+			steps = i;
 			break;
-		}
-
-		if (sdf < ALIAS_EPSILON + EPSILON)
-		{
-			hitAlias = true;
-			antialias = 1 - map(sdf, EPSILON, EPSILON + ALIAS_EPSILON, 0, 1);
 		}
 
 		t += sdf;
@@ -92,18 +81,6 @@ void main()
 		}
 	}
 
-	vec3 resultColor;
-	if (hit)
-	{
-		resultColor = vec3(1);
-	}
-	else if (hitAlias)
-	{
-		resultColor = vec3(antialias);
-	}
-	else
-	{
-		resultColor = vec3(0);
-	}
+	vec3 resultColor = vec3(1.f - steps / float(MAX_ITERATIONS));
 	outputColor(resultColor);
 }
