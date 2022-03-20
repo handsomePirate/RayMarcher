@@ -60,7 +60,7 @@ void main()
 
 	float t = 0.f;
 	bool hit = false;
-	int steps = 0;
+	int steps = MAX_ITERATIONS;
 
 	for (int i = 0; i < MAX_ITERATIONS; ++i)
 	{
