@@ -11,7 +11,7 @@ nodes:
             access: w
             format: color-optimal
     shaders:
-        compute: ../../src/Shaders/tetrahedron-fractal.comp.glsl
+        compute: ../../src/Shaders/mandelbulb.comp.glsl
     uniforms:
       -
         name: camera
