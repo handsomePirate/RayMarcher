@@ -20,7 +20,8 @@ project "RayMarcher"
 	includedirs {
 		HawkEyeInclude,
 		SoftwareCoreInclude,
-		EverViewportInclude
+		EverViewportInclude,
+		"../../ext/Eigen",
 	}
 
 	links {

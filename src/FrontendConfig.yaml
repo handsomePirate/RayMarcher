@@ -13,3 +13,7 @@ nodes:
     shaders:
         compute: ../../src/Shaders/march.comp.glsl
     uniforms:
+      -
+        name: camera
+        type: uniform
+        size: 64
